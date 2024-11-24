@@ -1,77 +1,154 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ClientService } from '../services/client.service';
+import { Client } from '../models/client.model';
 
 @Component({
   selector: 'app-clients',
   templateUrl: './clients.component.html',
-  styleUrls: ['./clients.component.css']
+  styleUrls: ['./clients.component.css'],
 })
-export class ClientsComponent {
-  // Define the employee object with all necessary properties
-
-    // Define the property to track modal state
-    isModalOpen = false;
-
-  clients = [
-    {
-      name: 'John ',
-      email: 'john.doe@example.com',
-      phone: '123-456-7890',
-      type: 'Software Engineer',
-      
-    },
-    {
-      name: 'John ',
-      email: 'jane.smith@example.com',
-      phone: '987-654-3210',
-      type: 'Project Manager',
-      
-    }
-  ];
-
-  // Add a property for new client
- client = {
+export class ClientsComponent implements OnInit {
+  clients: Client[] = [];
+  client: Client = {
+    id: 0,
     name: '',
     email: '',
-    phone: '',
-    type: '',
+    phoneNumber: 0,
+    clientType: '',
   };
+  selectedClient: Client = {
+    id: 0,
+    name: '',
+    email: '',
+    phoneNumber: 0,
+    clientType: '',
 
-  
+};
 
-  // Method to open the modal
+  isModalOpen = false;
+  isUpdateModalOpen = false;
+
+  constructor(private clientService: ClientService) {}
+
+  ngOnInit(): void {
+    this.loadClients();
+  }
+
+  loadClients(): void {
+    this.clientService.getClients().subscribe(
+      (data) => (this.clients = data),
+      (error) => console.error('Failed to fetch clients:', error)
+    );
+  }
+
+  // Open Add Modal
   openModal(): void {
     const modal = document.getElementById('addClientModal');
     if (modal) {
       modal.classList.add('show');
       modal.style.display = 'block';
-      this.isModalOpen = true; // Show backdrop
+      this.isModalOpen = true;
     }
   }
 
-  // Method to close the modal
+  // Close Add Modal
   closeModal(): void {
     const modal = document.getElementById('addClientModal');
     if (modal) {
       modal.classList.remove('show');
       modal.style.display = 'none';
-      this.isModalOpen = false; // Hide backdrop
+      this.isModalOpen = false;
     }
   }
 
-  // Method to handle form submission
+  // Add Client
   onSubmit(): void {
-    // Push the new employee to the employees array
-    this.clients.push({ ...this.client });  // Using spread operator to avoid reference issues
-  
-    // Optionally clear the form after submitting
+    this.clientService.addClient(this.client).subscribe(
+      () => {
+        this.loadClients();
+        this.closeModal();
+        this.resetClientForm();
+      },
+      (error) => console.error('Failed to add client:', error)
+    );
+  }
+
+  resetClientForm(): void {
     this.client = {
+      id: 0,
       name: '',
       email: '',
-      phone: '',
-      type: '', 
+      phoneNumber: 0,
+      clientType: '',
     };
+  }
+
+
+
   
-    // Close the modal after submission
-    this.closeModal();
+
+  
+  // Open Update Modal
+  openUpdateModal(client: Client): void {
+    this.selectedClient = { ...client };
+
+    const modal = document.getElementById('updateClientModal');
+    if (modal) {
+      modal.classList.add('show');
+      modal.style.display = 'block';
+      this.isUpdateModalOpen = true;
+    }
+  }
+
+  // Close Update Modal
+  closeUpdateModal(): void {
+    const modal = document.getElementById('updateClientModal');
+    if (modal) {
+      modal.classList.remove('show');
+      modal.style.display = 'none';
+      this.isUpdateModalOpen = false;
+    }
+
+    this.selectedClient;
+  }
+
+  // Update Employee
+  onUpdateSubmit(): void {
+    if (this.selectedClient) {
+      this.clientService.updateClient(this.selectedClient.id, this.selectedClient).subscribe(
+        () => {
+          this.loadClients();
+          this.closeUpdateModal();
+        },
+        (error) => console.error('Failed to update client:', error)
+      );
+    }
+  }
+
+  
+  fetchEmployees(): void {
+    this.clientService.getClients().subscribe(
+      (data) => {
+        this.clients = data; // Assuming `employees` is an array
+      },
+      (error) => {
+        console.error('Error fetching clients:', error);
+      }
+    );
+  }
+  
+  deleteClient(id: number): void {
+    if (confirm('Are you sure you want to delete this client?')) {
+      this.clientService.deleteClient(id).subscribe(
+        () => {
+          console.log(`client with ID ${id} deleted successfully.`);
+          this.fetchEmployees(); // Refresh the client list after deletion
+
+        },
+        (error) => {
+          console.error('Error deleting client:', error);
+        }
+      );
+    }
   }
 }

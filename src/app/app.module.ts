@@ -10,6 +10,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { EmployeesComponent } from './employees/employees.component';
 import { ClientsComponent } from './clients/clients.component';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
@@ -25,7 +26,8 @@ import { ClientsComponent } from './clients/clients.component';
     BrowserModule,
     AppRoutingModule,
     NgbModule,
-    FormsModule // Add FormsModule here
+    FormsModule, // Add FormsModule here
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
