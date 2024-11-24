@@ -1,147 +1,166 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { EmployeeService } from '../services/employee.service';
+import { Employee } from '../models/employee.model';
 
 @Component({
   selector: 'app-employees',
   templateUrl: './employees.component.html',
-  styleUrls: ['./employees.component.css']
+  styleUrls: ['./employees.component.css'],
 })
-export class EmployeesComponent {
-  // Define the employee object with all necessary properties
-
-    // Define the property to track modal state
-    isModalOpen = false;
-
-  employees = [
-    {
-      firstname: 'John ',
-      lastname : ' Doe',
-      email: 'john.doe@example.com',
-      phone: '123-456-7890',
-      position: 'Software Engineer',
-      profile: 'Developer',
-      status: 'active'
-    },
-    {
-      firstname: 'John ',
-      lastname : ' Doe',
-      email: 'jane.smith@example.com',
-      phone: '987-654-3210',
-      position: 'Project Manager',
-      profile: 'Management',
-      status: 'inactive'
-    }
-  ];
-
-  // Add a property for new employee
-  employee = {
-    firstname: '',
-    lastname : '',
+export class EmployeesComponent implements OnInit {
+  employees: Employee[] = [];
+  employee: Employee = {
+    id: 0,
+    firstName: '',
+    lastName: '',
     email: '',
-    phone: '',
-    position: '',
+    phoneNumber: 0,
+    fonction: '',
     profile: '',
-    status: 'active'
   };
 
-  // Method to capitalize the status in the table
-  getCapitalizedStatus(status: string): string {
-    return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+  // selectedEmployee!: Employee ;
+
+  selectedEmployee: Employee = {
+    id: 0, // Example ID
+    firstName: '',
+    lastName: '',
+    email: '',
+    phoneNumber: 0,
+    fonction: '',
+    profile: '',
+
+};
+
+  isModalOpen = false;
+  isUpdateModalOpen = false;
+
+  constructor(private employeeService: EmployeeService) {}
+
+  ngOnInit(): void {
+    this.loadEmployees();
   }
 
-  // Method to open the modal
+  loadEmployees(): void {
+    this.employeeService.getEmployees().subscribe(
+      (data) => (this.employees = data),
+      (error) => console.error('Failed to fetch employees:', error)
+    );
+  }
+
+  // Open Add Modal
   openModal(): void {
     const modal = document.getElementById('addEmployeeModal');
     if (modal) {
       modal.classList.add('show');
       modal.style.display = 'block';
-      this.isModalOpen = true; // Show backdrop
+      this.isModalOpen = true;
     }
   }
 
-  // Method to close the modal
+  // Close Add Modal
   closeModal(): void {
     const modal = document.getElementById('addEmployeeModal');
     if (modal) {
       modal.classList.remove('show');
       modal.style.display = 'none';
-      this.isModalOpen = false; // Hide backdrop
+      this.isModalOpen = false;
     }
   }
 
-  // Method to handle form submission
+  // Add Employee
   onSubmit(): void {
-    // Push the new employee to the employees array
-    this.employees.push({ ...this.employee });  // Using spread operator to avoid reference issues
-  
-    // Optionally clear the form after submitting
-    this.employee = {
-      firstname: '',
-      lastname : '',
-      email: '',
-      phone: '',
-      position: '',
-      profile: '',
-      status: 'active'
-    };
-  
-    // Close the modal after submission
-    this.closeModal();
+    this.employeeService.addEmployee(this.employee).subscribe(
+      () => {
+        this.loadEmployees();
+        this.closeModal();
+        this.resetEmployeeForm();
+      },
+      (error) => console.error('Failed to add employee:', error)
+    );
   }
 
+  resetEmployeeForm(): void {
+    this.employee = {
+      id: 0,
+      firstName: '',
+      lastName: '',
+      email: '',
+      phoneNumber: 0,
+      fonction: '',
+      profile: '',
+    };
+  }
 
-
-
-   // Track the selected employee for updating
-   selectedEmployee: any = null;
-
-   isUpdateModalOpen = false;
- 
-   // Open the Update Modal with backdrop
-  openUpdateModal(employee: any): void {
-    this.selectedEmployee = { ...employee }; // Clone employee to avoid direct mutation
+  // Open Update Modal
+  openUpdateModal(employee: Employee): void {
+    this.selectedEmployee = { ...employee };
 
     const modal = document.getElementById('updateEmployeeModal');
     const backdrop = document.getElementById('updateModalBackdrop');
+
     if (modal && backdrop) {
-      this.isUpdateModalOpen = true;
       modal.classList.add('show');
       modal.style.display = 'block';
-
+      this.isUpdateModalOpen = true;
       backdrop.classList.add('show');
       backdrop.style.display = 'block';
     }
   }
 
-  // Close the Update Modal and hide the backdrop
+  // Close Update Modal
   closeUpdateModal(): void {
     const modal = document.getElementById('updateEmployeeModal');
     const backdrop = document.getElementById('updateModalBackdrop');
     if (modal && backdrop) {
-      this.isUpdateModalOpen = false;
       modal.classList.remove('show');
       modal.style.display = 'none';
-
+      this.isUpdateModalOpen = false;
       backdrop.classList.remove('show');
       backdrop.style.display = 'none';
+
     }
 
-    this.selectedEmployee = null; // Clear selected employee
+    this.selectedEmployee;
   }
 
-  // Submit the Update Form
+  // Update Employee
   onUpdateSubmit(): void {
-    // Find and update the employee in the array
-    const index = this.employees.findIndex(
-      (emp) => emp.email === this.selectedEmployee.email
-    );
-  
-    if (index > -1) {
-      this.employees[index] = { ...this.selectedEmployee }; // Update the employee
-      this.employees = [...this.employees]; // Replace the array with a new reference
+    if (this.selectedEmployee) {
+      this.employeeService.updateEmployee(this.selectedEmployee.id, this.selectedEmployee).subscribe(
+        () => {
+          this.loadEmployees();
+          this.closeUpdateModal();
+        },
+        (error) => console.error('Failed to update employee:', error)
+      );
     }
-  
-    // Close the modal
-    this.closeUpdateModal();
+  }
+
+  fetchEmployees(): void {
+    this.employeeService.getEmployees().subscribe(
+      (data) => {
+        this.employees = data; // Assuming `employees` is an array
+      },
+      (error) => {
+        console.error('Error fetching employees:', error);
+      }
+    );
   }
   
+  deleteEmployee(id: number): void {
+    if (confirm('Are you sure you want to delete this employee?')) {
+      this.employeeService.deleteEmployee(id).subscribe(
+        () => {
+          console.log(`Employee with ID ${id} deleted successfully.`);
+          this.fetchEmployees(); // Refresh the client list after deletion
+
+        },
+        (error) => {
+          console.error('Error deleting employee:', error);
+        }
+      );
+    }
+  }
+
 }
