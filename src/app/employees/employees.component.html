@@ -46,7 +46,7 @@
                         <td><span class="status-dot" [ngClass]="{'status-active': employee.status === 'active', 'status-inactive': employee.status === 'inactive'}"></span> {{ employee.status }}</td>
                         <td>
                             <button class="btn btn-sm btn-primary" (click)="openUpdateModal(employee)"><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                            <button class="btn btn-sm btn-danger" (click)="deleteEmployee(employee)"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>
                 </tbody>

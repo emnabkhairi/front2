@@ -143,5 +143,15 @@ export class EmployeesComponent {
     // Close the modal
     this.closeUpdateModal();
   }
+  deleteEmployee(employee: any): void {
+    // Find the index of the employee in the array
+    const index = this.employees.findIndex(
+      (emp) => emp.email === employee.email
+    );
+  
+    if (index > -1) {
+      this.employees.splice(index, 1); // Remove the employee from the array
+    }
+  }
   
 }
