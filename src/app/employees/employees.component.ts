@@ -130,18 +130,41 @@ export class EmployeesComponent {
 
   // Submit the Update Form
   onUpdateSubmit(): void {
-    // Find and update the employee in the array
-    const index = this.employees.findIndex(
-      (emp) => emp.email === this.selectedEmployee.email
-    );
-  
-    if (index > -1) {
-      this.employees[index] = { ...this.selectedEmployee }; // Update the employee
-      this.employees = [...this.employees]; // Replace the array with a new reference
+    if (this.selectedEmployee) {
+      this.employeeService.updateEmployee(this.selectedEmployee.id, this.selectedEmployee).subscribe(
+        () => {
+          this.loadEmployees();
+          this.closeUpdateModal();
+        },
+        (error) => console.error('Failed to update employee:', error)
+      );
     }
+  }
+
+  fetchEmployees(): void {
+    this.employeeService.getEmployees().subscribe(
+      (data) => {
+        this.employees = data; // Assuming `employees` is an array
+      },
+      (error) => {
+        console.error('Error fetching employees:', error);
+      }
+    );
+  }
   
-    // Close the modal
-    this.closeUpdateModal();
+  deleteEmployee(id: number): void {
+    if (confirm('Are you sure you want to delete this employee?')) {
+      this.employeeService.deleteEmployee(id).subscribe(
+        () => {
+          console.log(`Employee with ID ${id} deleted successfully.`);
+          this.fetchEmployees(); // Refresh the client list after deletion
+
+        },
+        (error) => {
+          console.error('Error deleting employee:', error);
+        }
+      );
+    }
   }
   
 }

@@ -10,6 +10,10 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { EmployeesComponent } from './employees/employees.component';
 import { ClientsComponent } from './clients/clients.component';
+import { HttpClientModule } from '@angular/common/http';
+import { ProjectsComponent } from './projects/projects.component';
+import { LoginComponent } from './login/login.component';
+import { TeamsComponent } from './teams/teams.component';
 
 
 @NgModule({
@@ -19,7 +23,10 @@ import { ClientsComponent } from './clients/clients.component';
     NavbarComponent,
     DashboardComponent,
     EmployeesComponent,
-    ClientsComponent
+    ClientsComponent,
+    ProjectsComponent,
+    LoginComponent,
+    TeamsComponent
   ],
   imports: [
     BrowserModule,

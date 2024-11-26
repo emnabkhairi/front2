@@ -26,8 +26,8 @@
             <li><a routerLink="/dashboard" routerLinkActive="active" ><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
             <li><a routerLink="/employees" routerLinkActive="active"><i class="fas fa-users"></i> Employees</a></li>
             <li><a routerLink="/clients" routerLinkActive="active"><i class="fas fa-handshake"></i> Clients</a></li>
-            <li><a href="#"><i class="fas fa-project-diagram"></i> Projects</a></li>
-            <li><a href="#"><i class="fas fa-users-cog"></i> Teams</a></li>
+            <li><a routerLink="/projects" routerLinkActive="active" ><i class="fas fa-project-diagram"></i> Projects</a></li>
+            <li><a routerLink="/teams" routerLinkActive="active"><i class="fas fa-users-cog"></i> Teams</a></li>
             <li><a href="#"><i class="fas fa-comment-dots"></i> Feedbacks</a></li>
             <li><a href="#"><i class="fas fa-th"></i> Table</a></li>
             <li><a href="#"><i class="fas fa-info-circle"></i> About</a></li>
@@ -35,9 +35,10 @@
           
 
         <!-- Upgrade Button -->
-        <div class="upgrade-btn">
-            Sign Out 
-        </div>
+        
+        <span class=" upgrade-btn" class="upgrade-btn" routerLink="/login">
+            <i ></i> Sign Out 
+        </span>
     </div>
 
     <!-- Optional Bootstrap JS -->
