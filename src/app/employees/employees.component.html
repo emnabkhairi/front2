@@ -24,8 +24,8 @@
                 <thead class="table-light">
                     <tr>
                         <th>Employee</th>
-                        <th>Firstname</th>
-                        <th>Lastname</th>
+                        <th>firstname</th>
+                        <th>lastname</th>
                         <th>Email</th>
                         <th>Phone Number</th>
                         <th>Position</th>
@@ -35,18 +35,21 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let employee of employees">
-                        <td>
+                        <!-- <td>
                             <img src="https://via.placeholder.com/40" alt="Profile" class="rounded-circle me-2">
-                        </td>
-                        <td>{{ employee.firstname }}</td>
-                        <td>{{ employee.lastname }}</td>
-                        <td>{{ employee.email }}</td>
-                        <td>{{ employee.phone }}</td>
-                        <td>{{ employee.position }}</td>
-                        <td><span class="status-dot" [ngClass]="{'status-active': employee.status === 'active', 'status-inactive': employee.status === 'inactive'}"></span> {{ employee.status }}</td>
+                        </td> -->
+                        <td>{{ employee?.id }}</td>
+                        <td>{{ employee?.firstName }}</td>
+                        <td>{{ employee?.lastName }}</td>
+                        <td>{{ employee?.email }}</td>
+                        <td>{{ employee?.phoneNumber }}</td>
+                        <td>{{ employee?.fonction }}</td>
+                        <td>{{ employee?.profile }}</td>
+                        <!-- <td><span class="status-dot" [ngClass]="{'status-active': employee.status === 'active', 'status-inactive': employee.status === 'inactive'}"></span> {{ employee.status }}</td> -->
                         <td>
                             <button class="btn btn-sm btn-primary" (click)="openUpdateModal(employee)"><i class="fas fa-edit"></i></button>
-                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                            <button (click)="deleteEmployee(employee.id)"
+                            class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>
                 </tbody>
@@ -87,14 +90,14 @@
                         <!-- First Name and Last Name side by side -->
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="employeeFirstname" class="form-label">First Name</label>
-                                <input type="text" class="form-control" id="employeeFirstname" [(ngModel)]="employee.firstname" name="firstname" required placeholder="Enter first name">
+                                <label for="employeefirstName" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="employeefirstName" [(ngModel)]="employee.firstName" name="firstName" required placeholder="Enter first name">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="employeeLastname" class="form-label">Last Name</label>
-                                <input type="text" class="form-control" id="employeeLastname" [(ngModel)]="employee.lastname" name="lastname" required placeholder="Enter last name">
+                                <label for="employeelastName" class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="employeelastName" [(ngModel)]="employee.lastName" name="lastName" required placeholder="Enter last name">
                             </div>
                         </div>
                     </div>
@@ -109,18 +112,19 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="employeePhone" class="form-label">Phone Number</label>
-                                <input type="tel" class="form-control" id="employeePhone" [(ngModel)]="employee.phone" name="phone" required placeholder="Enter phone number">
+                                <input type="tel" class="form-control" id="employeePhone" [(ngModel)]="employee.phoneNumber" name="phone" required placeholder="Enter phone number">
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <!-- Position and Profile side by side -->
+                        <!-- fonction and Profile side by side -->
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="employeePosition" class="form-label">Position</label>
-                                <input type="text" class="form-control" id="employeePosition" [(ngModel)]="employee.position" name="position" required placeholder="Enter position">
+                                <label for="employeefonction" class="form-label">fonction</label>
+                                <input type="text" class="form-control" id="employeefonction" [(ngModel)]="employee.fonction" name="fonction" required placeholder="Enter fonction">
                             </div>
                         </div>
+                        
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="employeeProfile" class="form-label">Profile</label>
@@ -129,11 +133,11 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="employeeStatus" class="form-label">Status</label>
+                        <!-- <label for="employeeStatus" class="form-label">Status</label>
                         <select class="form-control" id="employeeStatus" [(ngModel)]="employee.status" name="status" required>
                             <option value="active">Active</option>
                             <option value="inactive">Inactive</option>
-                        </select>
+                        </select> -->
                     </div>
                     <button type="submit" class="btn btn-primary">Save</button>
                 </form>
@@ -159,14 +163,15 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="updateFirstname" class="form-label">First Name</label>
-                                <input type="text" class="form-control" id="updateFirstname" [(ngModel)]="selectedEmployee.firstname" name="firstname" required>
+                                <label for="updatefirstName" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="updatefirstName" [(ngModel)]="selectedEmployee.firstName" name="firstName" required>
                             </div>
+
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="updateLastname" class="form-label">Last Name</label>
-                                <input type="text" class="form-control" id="updateLastname" [(ngModel)]="selectedEmployee.lastname" name="lastname" required>
+                                <label for="updatelastName" class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="updatelastName" [(ngModel)]="selectedEmployee.lastName" name="lastName" required>
                             </div>
                         </div>
                     </div>
@@ -180,15 +185,15 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="updatePhone" class="form-label">Phone Number</label>
-                                <input type="tel" class="form-control" id="updatePhone" [(ngModel)]="selectedEmployee.phone" name="phone" required>
+                                <input type="tel" class="form-control" id="updatePhone" [(ngModel)]="selectedEmployee.phoneNumber" name="phone" required>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="updatePosition" class="form-label">Position</label>
-                                <input type="text" class="form-control" id="updatePosition" [(ngModel)]="selectedEmployee.position" name="position" required>
+                                <label for="updatefonction" class="form-label">fonction</label>
+                                <input type="text" class="form-control" id="updatefonction" [(ngModel)]="selectedEmployee.fonction" name="fonction" required>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -199,11 +204,11 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label for="updateStatus" class="form-label">Status</label>
+                        <!-- <label for="updateStatus" class="form-label">Status</label>
                         <select class="form-control" id="updateStatus" [(ngModel)]="selectedEmployee.status" name="status" required>
                             <option value="active">Active</option>
                             <option value="inactive">Inactive</option>
-                        </select>
+                        </select> -->
                     </div>
                     <button type="submit" class="btn btn-primary">Save Changes</button>
                 </form>

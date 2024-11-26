@@ -32,7 +32,8 @@ import { TeamsComponent } from './teams/teams.component';
     BrowserModule,
     AppRoutingModule,
     NgbModule,
-    FormsModule // Add FormsModule here
+    FormsModule, // Add FormsModule here
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
